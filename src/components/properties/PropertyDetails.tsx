@@ -17,7 +17,7 @@ import {
   MapPin,
   Bed,
   Bath,
-  SquareFoot,
+  Square,
   DollarSign,
   ArrowLeft,
   Loader2,
@@ -268,7 +268,7 @@ const PropertyDetails = () => {
 
             <div className="flex flex-col items-center p-3 rounded-lg bg-gray-50">
               <div className="flex items-center text-gray-500 mb-1">
-                <SquareFoot className="h-4 w-4 mr-1" />
+                <Square className="h-4 w-4 mr-1" />
                 <span className="text-xs">Area</span>
               </div>
               <span className="font-medium">

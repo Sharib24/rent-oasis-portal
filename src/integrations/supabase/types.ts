@@ -39,6 +39,63 @@ export type Database = {
         }
         Relationships: []
       }
+      properties: {
+        Row: {
+          address: string
+          bathrooms: number
+          bedrooms: number
+          city: string
+          created_at: string
+          description: string | null
+          id: string
+          is_available: boolean
+          owner_id: string
+          property_type: string
+          rent_amount: number
+          square_feet: number
+          state: string
+          title: string
+          updated_at: string
+          zip_code: string
+        }
+        Insert: {
+          address: string
+          bathrooms?: number
+          bedrooms?: number
+          city: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_available?: boolean
+          owner_id: string
+          property_type: string
+          rent_amount?: number
+          square_feet?: number
+          state: string
+          title: string
+          updated_at?: string
+          zip_code: string
+        }
+        Update: {
+          address?: string
+          bathrooms?: number
+          bedrooms?: number
+          city?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_available?: boolean
+          owner_id?: string
+          property_type?: string
+          rent_amount?: number
+          square_feet?: number
+          state?: string
+          title?: string
+          updated_at?: string
+          zip_code?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
