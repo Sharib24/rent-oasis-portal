@@ -40,7 +40,6 @@ const SignupForm = () => {
       } else {
         setError("An unexpected error occurred");
       }
-    } finally {
       setIsSubmitting(false);
     }
   };
