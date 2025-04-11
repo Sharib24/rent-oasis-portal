@@ -24,7 +24,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Header = () => {
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -45,7 +45,7 @@ const Header = () => {
           {user && (
             <>
               <Link to="/dashboard" className="text-gray-600 hover:text-rentOasis-primary font-medium">Dashboard</Link>
-              {user.role === 'landlord' && (
+              {profile && profile.role === 'landlord' && (
                 <Link to="/properties" className="text-gray-600 hover:text-rentOasis-primary font-medium">Properties</Link>
               )}
               <Link to="/rent-tracking" className="text-gray-600 hover:text-rentOasis-primary font-medium">Rent Tracking</Link>
@@ -60,9 +60,9 @@ const Header = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative rounded-full h-10 w-10 p-0">
                   <Avatar>
-                    <AvatarImage src={user.profileImage} alt={user.name} />
+                    <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.name || 'User'} />
                     <AvatarFallback className="bg-rentOasis-secondary text-white">
-                      {user.name.split(' ').map(n => n[0]).join('')}
+                      {profile?.name ? profile.name.split(' ').map(n => n[0]).join('') : 'U'}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -127,7 +127,7 @@ const Header = () => {
                     <span>Dashboard</span>
                   </div>
                 </Link>
-                {user.role === 'landlord' && (
+                {profile && profile.role === 'landlord' && (
                   <Link to="/properties" className="block py-2 text-gray-600 hover:text-rentOasis-primary font-medium" onClick={toggleMenu}>
                     <div className="flex items-center gap-2">
                       <Building className="h-5 w-5" />
