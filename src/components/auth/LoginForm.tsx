@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building, Loader2 } from "lucide-react";
+import { Building, Loader2, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -26,10 +27,34 @@ const LoginForm = () => {
       navigate("/dashboard");
     } catch (err) {
       if (err instanceof Error) {
-        setError(err.message);
+        if (err.message.includes("Invalid login credentials")) {
+          setError("Invalid email or password. Please try again.");
+        } else {
+          setError(err.message);
+        }
       } else {
         setError("An unexpected error occurred");
       }
+      console.error("Login error:", err);
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDemoLogin = async () => {
+    setError("");
+    setIsSubmitting(true);
+    
+    // Use demo credentials - you'll need to create this user in Supabase
+    try {
+      await login("demo@rentoasis.com", "demo12345");
+      navigate("/dashboard");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError("Demo login failed: " + err.message);
+      } else {
+        setError("Demo login failed with an unknown error");
+      }
+      console.error("Demo login error:", err);
       setIsSubmitting(false);
     }
   };
@@ -46,6 +71,12 @@ const LoginForm = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -81,7 +112,6 @@ const LoginForm = () => {
               required
             />
           </div>
-          {error && <div className="text-sm text-red-500">{error}</div>}
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
@@ -91,6 +121,15 @@ const LoginForm = () => {
             ) : (
               "Log in"
             )}
+          </Button>
+          <Button 
+            type="button" 
+            variant="outline" 
+            className="w-full mt-2" 
+            onClick={handleDemoLogin}
+            disabled={isSubmitting}
+          >
+            Try Demo Account
           </Button>
         </form>
       </CardContent>
