@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building, Loader2, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -16,6 +18,7 @@ const LoginForm = () => {
   const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,10 +47,44 @@ const LoginForm = () => {
     setError("");
     setIsSubmitting(true);
     
-    // Use demo credentials - you'll need to create this user in Supabase
+    const demoEmail = "demo@rentoasis.com";
+    const demoPassword = "demo12345";
+    
     try {
-      await login("demo@rentoasis.com", "demo12345");
-      navigate("/dashboard");
+      // Try to log in with demo credentials
+      try {
+        await login(demoEmail, demoPassword);
+        navigate("/dashboard");
+        return;
+      } catch (err) {
+        console.log("Demo login failed, attempting to create demo account");
+        
+        // If login fails, try to create the demo account
+        const { data, error: signupError } = await supabase.auth.signUp({
+          email: demoEmail,
+          password: demoPassword,
+          options: {
+            data: {
+              name: "Demo User",
+              role: "landlord",
+            },
+          },
+        });
+        
+        if (signupError) {
+          throw signupError;
+        }
+        
+        // If sign-up was successful, log in using the same credentials
+        await login(demoEmail, demoPassword);
+        
+        toast({
+          title: "Demo account created",
+          description: "You've been logged in as a demo landlord user.",
+        });
+        
+        navigate("/dashboard");
+      }
     } catch (err) {
       if (err instanceof Error) {
         setError("Demo login failed: " + err.message);
