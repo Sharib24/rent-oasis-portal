@@ -67,8 +67,11 @@ const LoginForm = () => {
             description: "You're now signed in as a demo user",
           });
           
-          // Force navigation to dashboard
-          window.location.href = "/dashboard";
+          // Update auth context state manually to ensure it recognizes the user is logged in
+          await login(demoEmail, demoPassword);
+          
+          // Use navigate for consistent routing behavior
+          navigate("/dashboard", { replace: true });
           return;
         }
         throw signInError;
@@ -80,9 +83,9 @@ const LoginForm = () => {
         description: "You've been logged in as a demo user.",
       });
       
-      // Force navigation - this ensures we're doing a full refresh which helps
-      // with auth state propagation
-      window.location.href = "/dashboard";
+      // Update auth context state and use navigate for consistent routing
+      await login(demoEmail, demoPassword);
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       if (err instanceof Error) {
         setError("Demo login failed: " + err.message);
