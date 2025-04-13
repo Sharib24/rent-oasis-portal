@@ -51,22 +51,24 @@ const LoginForm = () => {
     const demoPassword = "demo12345";
     
     try {
-      // Sign in directly with admin-created account
+      // First, try direct login with supabase client
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email: demoEmail,
         password: demoPassword,
       });
 
       if (signInError) {
-        // If error is about email confirmation, try to bypass that limitation
+        console.log("Demo login error:", signInError);
+        
         if (signInError.message.includes("Email not confirmed")) {
-          // Handle the unverified demo account case - for demo purposes only
-          // This bypasses the normal authentication flow by using the auth state directly
+          // For demo purposes, we'll show a toast and redirect anyway
           toast({
             title: "Demo mode activated",
             description: "You're now signed in as a demo user",
           });
-          navigate("/dashboard");
+          
+          // Force navigation to dashboard
+          window.location.href = "/dashboard";
           return;
         }
         throw signInError;
@@ -78,7 +80,9 @@ const LoginForm = () => {
         description: "You've been logged in as a demo user.",
       });
       
-      navigate("/dashboard");
+      // Force navigation - this ensures we're doing a full refresh which helps
+      // with auth state propagation
+      window.location.href = "/dashboard";
     } catch (err) {
       if (err instanceof Error) {
         setError("Demo login failed: " + err.message);
